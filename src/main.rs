@@ -1,3 +1,4 @@
+use crate::config::Config;
 use actix_web::{
     get, http::header::{
         Accept, CacheControl, CacheDirective, ContentType, EntityTag, Header, IfNoneMatch,
@@ -15,6 +16,8 @@ use std::sync::LazyLock;
 use std::time::Duration;
 use tempfile::TempDir;
 use tokei::{Language, LanguageType, Languages};
+
+mod config;
 
 const BLUE: &str = "#007ec6";
 const GREY: &str = "#555555";
@@ -42,13 +45,17 @@ async fn main() -> std::io::Result<()> {
     dotenvy::dotenv().ok();
     env_logger::init();
 
-    HttpServer::new(|| {
+    let config = Config::from_env();
+    let state = web::Data::new(config.clone());
+
+    HttpServer::new(move || {
         App::new()
+            .app_data(state.clone())
             .wrap(actix_web::middleware::Logger::default())
             .service(redirect_index)
             .service(create_badge)
     })
-    .bind(("0.0.0.0", 8000))?
+    .bind(("0.0.0.0", config.port))?
     .run()
     .await
 }
@@ -105,8 +112,13 @@ async fn create_badge(
     request: HttpRequest,
     path: web::Path<(String, String, String)>,
     web::Query(query): web::Query<BadgeQuery>,
+    config: web::Data<Config>,
 ) -> actix_web::Result<HttpResponse> {
     let (domain, user, repo) = path.into_inner();
+    if !config.is_user_allowed(&user) {
+        return Ok(respond!(Forbidden));
+    }
+
     let category = query.category.unwrap_or_else(|| "lines".to_owned());
     let (label, no_label) = match query.label {
         Some(v) => (v, false),

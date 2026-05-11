@@ -4,4 +4,4 @@ build:
 	docker build -t lemon-tokei .
 
 up:
-	docker run -d --name lemon-tokei -p 8000:8000 lemon-tokei
+	docker run -d --name lemon-tokei -p 8000:8000 --env-file .env lemon-tokei

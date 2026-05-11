@@ -3,6 +3,25 @@
 A badge service for displaying repository statistics. Forked from [tokei.rs](https://github.com/XAMPPRocky/tokei_rs) by
 XAMPPRocky.
 
+## Deployment
+
+```yaml
+services:
+  lemon-tokei:
+    container_name: lemon-tokei
+    image: ghcr.io/zitronenjoghurt/lemon-tokei:latest
+    env_file:
+      - .env
+    restart: unless-stopped
+```
+
+```dotenv
+# The port to run the server on, will default to 8000 if not set.
+TOKEI_PORT=8000
+# Comma-separated or empty, if empty or not set, all users are allowed.
+ALLOWED_USERS=Zitronenjoghurt,XAMPPRocky
+```
+
 ## Scheme
 
 The URL scheme is as follows:
