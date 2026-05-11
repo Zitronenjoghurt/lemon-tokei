@@ -5,21 +5,37 @@ XAMPPRocky.
 
 ## Deployment
 
+### Docker
+
+You can deploy the badge service using the provided docker image from this repository.
+
+docker-compose.yml:
+
 ```yaml
 services:
   lemon-tokei:
     container_name: lemon-tokei
     image: ghcr.io/zitronenjoghurt/lemon-tokei:latest
+    # Can be disregarded if no custom env vars are needed.
     env_file:
       - .env
+    # Has to be equivalent to the port specified in the .env (if set).
+    ports:
+      - 8000:8000
     restart: unless-stopped
 ```
+
+.env (optional):
 
 ```dotenv
 # The port to run the server on, will default to 8000 if not set.
 TOKEI_PORT=8000
 # Comma-separated or empty, if empty or not set, all users are allowed.
 ALLOWED_USERS=Zitronenjoghurt,XAMPPRocky
+```
+
+```shell
+docker-compose up -d
 ```
 
 ## Scheme
