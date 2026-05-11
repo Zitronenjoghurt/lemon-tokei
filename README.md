@@ -1,3 +1,5 @@
+![](http://tokei.lemon.industries/b1/github/Zitronenjoghurt/lemon-tokei?category=code&type=Rust&logo=https://simpleicons.org/icons/rust.svg)
+
 # Badge Service
 
 A badge service for displaying repository statistics. Forked from [tokei.rs](https://github.com/XAMPPRocky/tokei_rs) by
